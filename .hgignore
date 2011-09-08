@@ -1,0 +1,11 @@
+# Use glob syntax
+syntax: glob
+*.o
+*.a
+*.swp
+twitterbot
+cscope.out
+*.so
+*.i
+*core*
+twitterbot.conf
