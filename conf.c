@@ -10,7 +10,7 @@ int load_config(GHashTable *config_table){
 	config_t config;
 	config_init(&config);
 	if( !config_read_file(&config, "wolfbot.conf") ){
-		fprintf(stderr, "%s:%d: error: %s", config_error_file(&config), config_error_line(&config), config_error_text(&config));
+		fprintf(stderr, "%s:%d: error: %s\n", config_error_file(&config), config_error_line(&config), config_error_text(&config));
 		config_destroy(&config);
 		return 0;
 	} else {
