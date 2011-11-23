@@ -5,6 +5,7 @@
 #include <glib.h>
 #include <libconfig.h>
 #include <libircclient.h>
+#include <oauth.h>
 #include "conf.h"
 struct config_entry {
 	int type;
