@@ -4,7 +4,7 @@ PROG = twitterbot
 # All of the C files we'll need go here, but with a .o extension
 OBJS = conf.o main.o
 
-LIBS = glib-2.0 gthread-2.0 libconfig oauth
+LIBS = glib-2.0 gthread-2.0 libconfig oauth libcurl
 
 CC = gcc
 CFLAGS = -ggdb -Wall -Werror -Wextra -I${CURDIR}/libircclient -DTWITTERBOT_VERSION='"$(shell hg id -n)"' $(shell pkg-config --cflags ${LIBS})
