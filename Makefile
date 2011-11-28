@@ -2,7 +2,7 @@
 PROG = twitterbot
 
 # All of the C files we'll need go here, but with a .o extension
-OBJS = conf.o main.o
+OBJS = conf.o callbacks.o main.o
 
 LIBS = glib-2.0 gthread-2.0 libconfig oauth libcurl
 

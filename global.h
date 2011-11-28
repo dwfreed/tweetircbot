@@ -8,6 +8,7 @@
 #include <libircclient.h>
 #include <oauth.h>
 #include "conf.h"
+#include "callbacks.h"
 struct config_entry {
 	int type;
 	int element_type;
