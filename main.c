@@ -42,7 +42,7 @@ int main(int argc __attribute__((__unused__)), char *argv[]){
 	callbacks->event_mode = irc_event;
 	callbacks->event_nick = irc_event;
 	callbacks->event_notice = irc_event;
-	callbacks->event_numeric = irc_eventcode;
+	callbacks->event_numeric = irc_numeric;
 	callbacks->event_part = irc_event;
 	callbacks->event_privmsg = irc_event;
 	callbacks->event_quit = irc_event;
