@@ -1,4 +1,4 @@
-#include <global.h>
+#include "global.h"
 
 int main(int argc __attribute__((__unused__)), char *argv[]){
 	struct rlimit limits;
@@ -29,5 +29,25 @@ int main(int argc __attribute__((__unused__)), char *argv[]){
 	getrlimit(RLIMIT_STACK, &limits);
 	limits.rlim_cur = limits.rlim_max;
 	setrlimit(RLIMIT_STACK, &limits);
+	struct irc_callbacks *callbacks = (struct irc_callbacks *)malloc(sizeof(struct irc_callbacks));
+	callbacks->event_channel = irc_event;
+	callbacks->event_channel_notice = irc_event;
+	callbacks->event_connect = irc_event;
+	callbacks->event_ctcp_action = irc_event;
+	callbacks->event_ctcp_rep = irc_event;
+	callbacks->event_ctcp_req = irc_event;
+	callbacks->event_invite = irc_event;
+	callbacks->event_join = irc_event;
+	callbacks->event_kick = irc_event;
+	callbacks->event_mode = irc_event;
+	callbacks->event_nick = irc_event;
+	callbacks->event_notice = irc_event;
+	callbacks->event_numeric = irc_eventcode;
+	callbacks->event_part = irc_event;
+	callbacks->event_privmsg = irc_event;
+	callbacks->event_quit = irc_event;
+	callbacks->event_topic = irc_event;
+	callbacks->event_umode = irc_event;
+	callbacks->event_unknown = irc_event;
 	return 0;
 }
