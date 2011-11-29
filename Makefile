@@ -7,7 +7,7 @@ OBJS = conf.o callbacks.o main.o
 LIBS = glib-2.0 gthread-2.0 libconfig oauth libcurl
 
 CC = gcc
-CFLAGS = -ggdb -Wall -Werror -Wextra -I${CURDIR}/libircclient -DTWITTERBOT_VERSION='"$(shell hg id -n)"' $(shell pkg-config --cflags ${LIBS})
+CFLAGS = -ggdb2 -Wall -Werror -Wextra -I${CURDIR}/libircclient -DTWITTERBOT_VERSION='"$(shell hg id -n)"' $(shell pkg-config --cflags ${LIBS})
 LDFLAGS = -Wl,-rpath,${CURDIR}/libircclient -L${CURDIR}/libircclient $(shell pkg-config --libs ${LIBS}) -lircclient
 
 all: ${PROG}
