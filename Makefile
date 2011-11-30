@@ -10,7 +10,7 @@ CC = gcc
 CFLAGS = -ggdb2 -Wall -Werror -Wextra -I${CURDIR}/libircclient -DTWITTERBOT_VERSION='"$(shell hg id -n)"' $(shell pkg-config --cflags ${LIBS})
 LDFLAGS = -Wl,-rpath,${CURDIR}/libircclient -L${CURDIR}/libircclient $(shell pkg-config --libs ${LIBS}) -lircclient
 
-all: ${PROG}
+all: depcheck ${PROG}
 
 ${PROG}: ${OBJS}
 	@echo "Building $@"
@@ -42,4 +42,13 @@ leakcheck: ${PROG}
 	@echo "Leak-checking ${PROG}"
 	@MALLOC_CHECK_=1 G_SLICE="all" G_DEBUG="all" valgrind --leak-check=full --track-fds=yes --show-reachable=yes --track-origins=yes ./${PROG}
 
-.PHONY: all libircclient run clean leakcheck
+depcheck:
+	@echo "Checking dependencies"
+	@pkg-config --exists 'glib-2.0 >= 2.28.0' || (echo 'You need at least GLib 2.28.0!' && return 1)
+	@pkg-config --exists 'libconfig >= 1.4.8' || (echo 'You need at least libconfig 1.4.8!' && return 1)
+	@pkg-config --exists 'oauth >= 0.9.4' || (echo 'You need at least liboauth 0.9.4!' && return 1)
+	@pkg-config --exists 'libcurl >= 7.16.2' || (echo 'You need at least libcurl 7.16.2!' && return 1)
+	@pkg-config --exists 'json-glib-1.0 >= 0.14.2' || (echo 'You need at least json-glib 0.14.2!' && return 1)
+	@echo "Dependencies OK"
+
+.PHONY: all libircclient run clean leakcheck depcheck
