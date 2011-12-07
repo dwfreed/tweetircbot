@@ -49,5 +49,23 @@ int main(int argc __attribute__((__unused__)), char *argv[]){
 	callbacks->event_topic = irc_event;
 	callbacks->event_umode = irc_event;
 	callbacks->event_unknown = irc_event;
+	struct irc_session *session = irc_create_session(callbacks);
+	free(callbacks);
+	irc_option_set(session, LIBIRCCLIENT_OPTION_DEBUG);
+	g_thread_init(NULL);
+	struct context *context = (struct context *)calloc(1, sizeof(struct context));
+	context->config = g_hash_table_new_full(g_str_hash, g_str_equal, free, config_free);
+	load_config(context->config);
+	g_static_rw_lock_init(context->flags_lock);
+	context->pong_cond = g_cond_new();
+	pong_mutex = g_mutex_new();
+	g_static_rw_lock_init(context->config_lock);
+	context->nicks = g_hash_table_new_full(g_str_hash, g_str_equal, free, free);
+	context->raw_tweets = g_async_queue_new_full(free);
+	context->raw_messages = g_async_queue_new_full(free);
+	context->channel_pipes_read = g_hash_table_new_full(g_str_hash, g_str_equal, free, NULL);
+	context->channel_pipes_write = g_hash_table_new_full(g_str_hash, g_str_equal, free, NULL);
+	irc_set_ctx(session, context);
+	
 	return 0;
 }
