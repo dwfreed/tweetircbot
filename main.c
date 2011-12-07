@@ -58,7 +58,7 @@ int main(int argc __attribute__((__unused__)), char *argv[]){
 	load_config(context->config);
 	g_static_rw_lock_init(context->flags_lock);
 	context->pong_cond = g_cond_new();
-	pong_mutex = g_mutex_new();
+	context->pong_mutex = g_mutex_new();
 	g_static_rw_lock_init(context->config_lock);
 	context->nicks = g_hash_table_new_full(g_str_hash, g_str_equal, free, free);
 	context->raw_tweets = g_async_queue_new_full(free);
