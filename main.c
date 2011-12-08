@@ -67,5 +67,21 @@ int main(int argc __attribute__((__unused__)), char *argv[]){
 	context->channel_pipes_write = g_hash_table_new_full(g_str_hash, g_str_equal, free, NULL);
 	irc_set_ctx(session, context);
 	
+	g_hash_table_destroy(context->channel_pipes_write);
+	g_hash_table_destroy(context->channel_pipes_read);
+	g_async_queue_unref(context->raw_messages);
+	g_async_queue_unref(context->raw_tweets);
+	g_hash_table_destroy(context->nicks);
+	g_static_rw_lock_free(context->config_lock);
+	g_mutex_free(context->pong_mutex);
+	g_cond_free(context->pong_cond);
+	g_static_rw_lock_free(context->flags_lock);
+	g_hash_table_destroy(context->config);
+	irc_destroy_session(session);
+	if( context->flags.restart ){
+		free(context);
+		execvp(argv[0], argv);
+	}
+	free(context);
 	return 0;
 }
