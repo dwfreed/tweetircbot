@@ -1,0 +1,62 @@
+{
+	"bot": {
+		"ipv6": true,
+		"server": "irc.freenode.net",
+		"port": 6667,
+		"nick": "twitter",
+		"password": "mypassword",
+		"name": "Twitter",
+		"user": "twitter",
+		"user_mode": "",
+		"admins": [ "dwfreed", "KyleXY" ],
+		"channels": [ "##dwfreed", "#minecraft", "#botters", "#botters-test" ]
+	},
+	"channels": {
+		"##dwfreed": {
+			"ops": [ "dwfreed", "belak", "jsvana", "KyleXY", "Thirtysixway", "ttech" ],
+			"follow": [ "notch", "jeb_" ],
+			"notch": {
+				"replies_from_user": true,
+				"replies_to_user": false,
+				"retweets_from_user": true,
+				"retweets_to_user": false
+			},
+			"jeb_": {
+				"replies_from_user": true,
+				"replies_to_user": false,
+				"retweets_from_user": true,
+				"retweets_to_user": false
+			}
+		},
+		"#minecraft": {
+			"ops": [ "bep", "KyleXY", "aperson", "Dagmar", "PhonicUK", "streather", "edify", "tktech" ],
+			"follow": [ "notch", "jeb_"],
+			"notch": {
+				"replies_from_user": false,
+				"replies_to_user": false,
+				"retweets_from_user": false,
+				"retweets_to_user": false
+			},
+			"jeb_": {
+				"replies_from_user": false,
+				"replies_to_user": false,
+				"retweets_from_user": false,
+				"retweets_to_user": false
+			}
+		},
+		"#botters": {
+			"ops": [ "ttech", "scott_", "GPT", "danopia", "duckinator", "nixeagle", "nanotube", "codeblock", "Gryllida", "sonicrules1234", "Resistance" ],
+			"follow": [ ]
+		},
+		"#botters-test": {
+			"ops": [ "ttech", "scott_", "GPT", "danopia", "duckinator", "nixeagle", "nanotube", "codeblock", "Gryllida", "sonicrules1234", "Resistance" ],
+			"follow": [ ]
+		}
+	},
+	"twitter": {
+		"consumer_key": "seeminglyrandombase64string",
+		"consumer_secret": "anotherseeminglyrandombase64string",
+		"access_token": "yetanotherseeminglyrandombase64string",
+		"access_secret": "stillanotherseeminglyrandombase64string"
+	}
+}
