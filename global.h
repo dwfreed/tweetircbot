@@ -8,8 +8,8 @@
 #include <curl/curl.h>
 #include <glib.h>
 #include <libconfig.h>
-#include <libircclient.h>
 #include <oauth.h>
+#include "libircclient.h"
 #include "conf.h"
 #include "callbacks.h"
 struct config_entry {
