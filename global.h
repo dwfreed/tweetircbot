@@ -7,7 +7,6 @@
 #include <unistd.h>
 #include <curl/curl.h>
 #include <glib.h>
-#include <libconfig.h>
 #include <oauth.h>
 #include "libircclient.h"
 #include "conf.h"
