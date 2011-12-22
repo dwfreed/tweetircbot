@@ -56,10 +56,12 @@ int main(int argc __attribute__((__unused__)), char *argv[]){
 	struct context *context = (struct context *)calloc(1, sizeof(struct context));
 	context->config = g_hash_table_new_full(g_str_hash, g_str_equal, free, config_free);
 	load_config(context->config);
-	g_static_rw_lock_init(context->flags_lock);
+	GStaticRWLock flags_lock = G_STATIC_RW_LOCK_INIT;
+	context->flags_lock = &flags_lock;
 	context->pong_cond = g_cond_new();
 	context->pong_mutex = g_mutex_new();
-	g_static_rw_lock_init(context->config_lock);
+	GStaticRWLock config_lock = G_STATIC_RW_LOCK_INIT;
+	context->config_lock = &config_lock;
 	context->nicks = g_hash_table_new_full(g_str_hash, g_str_equal, free, free);
 	context->raw_tweets = g_async_queue_new_full(free);
 	context->raw_messages = g_async_queue_new_full(free);
