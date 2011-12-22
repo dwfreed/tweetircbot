@@ -12,6 +12,7 @@
 #include "libircclient.h"
 #include "conf.h"
 #include "callbacks.h"
+#include "ircmessages.h"
 struct context {
 	struct {
 		unsigned int run : 1;
