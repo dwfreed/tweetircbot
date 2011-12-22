@@ -12,13 +12,6 @@
 #include "libircclient.h"
 #include "conf.h"
 #include "callbacks.h"
-struct config_entry {
-	int type;
-	int element_type;
-	int size;
-	void *data;
-};
-
 struct context {
 	struct {
 		unsigned int run : 1;
