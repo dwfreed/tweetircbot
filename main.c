@@ -64,7 +64,7 @@ int main(int argc __attribute__((__unused__)), char *argv[]){
 	context->config_lock = &config_lock;
 	context->nicks = g_hash_table_new_full(g_str_hash, g_str_equal, free, free);
 	context->raw_tweets = g_async_queue_new_full(free);
-	context->raw_messages = g_async_queue_new_full(free);
+	context->raw_messages = g_async_queue_new_full(message_free);
 	context->channel_queues = g_hash_table_new_full(g_str_hash, g_str_equal, free, NULL);
 	irc_set_ctx(session, context);
 	

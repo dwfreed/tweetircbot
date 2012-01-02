@@ -39,15 +39,8 @@ void *ircmessages(void *args){
 						free(nick);
 					}
 				}
-				free(message->event);
 			}
-			free(message->origin);
-			unsigned int i;
-			for( i = 0; i < message->count; ++i ){
-				free(message->params[i]);
-			}
-			free(message->params);
-			free(message);
+			message_free(message);
 			g_get_current_time(&wait_time);
 			g_time_val_add(&wait_time, 1000000);
 		}
