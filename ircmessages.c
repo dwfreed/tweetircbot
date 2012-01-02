@@ -56,3 +56,17 @@ void *ircmessages(void *args){
 	g_static_rw_lock_reader_unlock(context->flags_lock);
 	return NULL;
 }
+
+void message_free(void *item){
+	struct message *message = (struct message *)item;
+	free(message->origin);
+	if( !message->eventcode ){
+		free(message->event);
+	}
+	unsigned int i;
+	for( i = 0; i < message->count; ++i ){
+		free(message->params[i]);
+	}
+	free(message->params);
+	free(message);
+}
