@@ -6,3 +6,4 @@ struct message {
 	unsigned int count;
 };
 void *ircmessages(void *args);
+void message_free(void *item);
