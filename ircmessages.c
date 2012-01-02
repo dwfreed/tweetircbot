@@ -39,11 +39,9 @@ void *ircmessages(void *args){
 						free(nick);
 					}
 				}
-			}
-			free(message->origin);
-			if( !message->eventcode ){
 				free(message->event);
 			}
+			free(message->origin);
 			unsigned int i;
 			for( i = 0; i < message->count; ++i ){
 				free(message->params[i]);
