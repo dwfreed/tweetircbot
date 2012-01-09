@@ -1,6 +1,7 @@
 #include "global.h"
 
 int main(int argc __attribute__((__unused__)), char *argv[]){
+	int retval = 0;
 	struct rlimit limits;
 	getrlimit(RLIMIT_AS, &limits);
 	limits.rlim_cur = limits.rlim_max;
@@ -55,27 +56,47 @@ int main(int argc __attribute__((__unused__)), char *argv[]){
 	g_thread_init(NULL);
 	struct context *context = (struct context *)calloc(1, sizeof(struct context));
 	context->config = g_hash_table_new_full(g_str_hash, g_str_equal, free, config_free);
-	load_config(context->config);
-	GStaticRWLock flags_lock = G_STATIC_RW_LOCK_INIT;
-	context->flags_lock = &flags_lock;
-	context->pong_cond = g_cond_new();
-	context->pong_mutex = g_mutex_new();
-	GStaticRWLock config_lock = G_STATIC_RW_LOCK_INIT;
-	context->config_lock = &config_lock;
-	context->nicks = g_hash_table_new_full(g_str_hash, g_str_equal, free, free);
-	context->raw_tweets = g_async_queue_new_full(free);
-	context->raw_messages = g_async_queue_new_full(message_free);
-	context->channel_queues = g_hash_table_new_full(g_str_hash, g_str_equal, free, NULL);
-	irc_set_ctx(session, context);
-	
-	g_hash_table_destroy(context->channel_queues);
-	g_async_queue_unref(context->raw_messages);
-	g_async_queue_unref(context->raw_tweets);
-	g_hash_table_destroy(context->nicks);
-	g_static_rw_lock_free(context->config_lock);
-	g_mutex_free(context->pong_mutex);
-	g_cond_free(context->pong_cond);
-	g_static_rw_lock_free(context->flags_lock);
+	if( load_config(context->config) ){
+		context->flags.run = TRUE;
+		context->flags.restart = FALSE;
+		context->flags.follow_config_changed = FALSE;
+		context->flags.pong_received = FALSE;
+		GStaticRWLock flags_lock = G_STATIC_RW_LOCK_INIT;
+		context->flags_lock = &flags_lock;
+		context->pong_cond = g_cond_new();
+		context->pong_mutex = g_mutex_new();
+		GStaticRWLock config_lock = G_STATIC_RW_LOCK_INIT;
+		context->config_lock = &config_lock;
+		context->nicks = g_hash_table_new_full(g_str_hash, g_str_equal, free, free);
+		context->raw_tweets = g_async_queue_new_full(free);
+		context->raw_messages = g_async_queue_new_full(message_free);
+		context->channel_queues = g_hash_table_new_full(g_str_hash, g_str_equal, free, NULL);
+		irc_set_ctx(session, context);
+		GError *error = NULL;
+		GThread *ircmessage_thread;
+		if( !(ircmessage_thread = g_thread_create(ircmessages, session, TRUE, &error)) ){
+			fprintf(stderr, "Error starting IRC message handling thread: %s", error->message);
+			g_error_free(error);
+			retval = 1;
+		} else {
+			g_static_rw_lock_reader_lock(context->config_lock);
+			if( config_get_boolean(context->config, "bot.ipv6") ){
+				irc_connect6(session, config_get_string(context->config, "bot.server"), config_get_int(context->config, "bot.port"), config_get_string(context->config, "bot.password"),  config_get_string(context->config, "bot.nick"), config_get_string(context->config, "bot.user"), config_get_string(context->config, "bot.name"));
+			} else {
+				irc_connect(session, config_get_string(context->config, "bot.server"), config_get_int(context->config, "bot.port"), config_get_string(context->config, "bot.password"),  config_get_string(context->config, "bot.nick"), config_get_string(context->config, "bot.user"), config_get_string(context->config, "bot.name"));
+			}
+			irc_run(session);
+			g_thread_join(ircmessage_thread);
+		}
+		g_hash_table_destroy(context->channel_queues);
+		g_async_queue_unref(context->raw_messages);
+		g_async_queue_unref(context->raw_tweets);
+		g_hash_table_destroy(context->nicks);
+		g_mutex_free(context->pong_mutex);
+		g_cond_free(context->pong_cond);
+	} else {
+		retval = 1;
+	}
 	g_hash_table_destroy(context->config);
 	irc_destroy_session(session);
 	if( context->flags.restart ){
@@ -83,5 +104,5 @@ int main(int argc __attribute__((__unused__)), char *argv[]){
 		execvp(argv[0], argv);
 	}
 	free(context);
-	return 0;
+	return retval;
 }
