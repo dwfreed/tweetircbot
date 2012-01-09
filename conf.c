@@ -9,7 +9,7 @@
 int load_config(GHashTable *config_table){
 	g_type_init();
 	JsonParser *parser = json_parser_new();
-	GError *error;
+	GError *error = NULL;
 	if( !json_parser_load_from_file(parser, "twitterbot.conf", &error) ){
 		fprintf(stderr, "Error parsing configuration file: %s\n", error->message);
 		g_error_free(error);
