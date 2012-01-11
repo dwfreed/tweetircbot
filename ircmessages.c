@@ -62,6 +62,15 @@ void commands(struct irc_session *session, struct message *message, char *comman
 			irc_cmd_quit(session, "Bye!");
 			authorized = TRUE;
 		}
+	} else if( !strcasecmp(command_parts[0], "restart") ){
+		if( isadmin(session, message->origin) ){
+			g_static_rw_lock_writer_lock(context->flags_lock);
+			context->flags.run = 0;
+			context->flags.restart = 1;
+			g_static_rw_lock_writer_unlock(context->flags_lock);
+			irc_cmd_quit(session, "Bye!");
+			authorized = TRUE;
+		}
 	}
 	if( !authorized ){
 		irc_cmd_notice(session, nick, "You are not authorized to perform this command.");
