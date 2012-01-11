@@ -59,7 +59,9 @@ void commands(struct irc_session *session, struct message *message, char *comman
 			g_static_rw_lock_writer_lock(context->flags_lock);
 			context->flags.run = 0;
 			g_static_rw_lock_writer_unlock(context->flags_lock);
-			irc_cmd_quit(session, "Bye!");
+			char *quit_message = g_strjoinv(" ", command_parts + 1);
+			irc_cmd_quit(session, quit_message);
+			g_free(quit_message);
 			authorized = TRUE;
 		}
 	} else if( !strcasecmp(command_parts[0], "restart") ){
@@ -68,7 +70,9 @@ void commands(struct irc_session *session, struct message *message, char *comman
 			context->flags.run = 0;
 			context->flags.restart = 1;
 			g_static_rw_lock_writer_unlock(context->flags_lock);
-			irc_cmd_quit(session, "Bye!");
+			char *quit_message = g_strjoinv(" ", command_parts + 1);
+			irc_cmd_quit(session, quit_message);
+			g_free(quit_message);
 			authorized = TRUE;
 		}
 	}
