@@ -139,6 +139,7 @@ void *ircmessages(void *args){
 					irc_send_raw(session, "CAP REQ :account-notify extended-join");
 					int channels_size;
 					g_static_rw_lock_reader_lock(context->config_lock);
+					irc_cmd_user_mode(session, config_get_string(context->config, "bot.user_mode"));
 					GList *channels = config_get_array(context->config, "bot.channels", &channels_size);
 					char join_command[511] = "JOIN ";
 					int i = 0;
