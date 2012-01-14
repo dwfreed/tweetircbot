@@ -96,6 +96,8 @@ void commands(struct irc_session *session, struct message *message, char *comman
 					g_static_rw_lock_writer_unlock(context->flags_lock);
 					irc_cmd_quit(session, "Restarting for upgrade");
 				}
+			} else {
+				irc_cmd_notice(session, nick, "Upgrade not needed.");
 			}
 			authorized = TRUE;
 		}
