@@ -75,6 +75,30 @@ void commands(struct irc_session *session, struct message *message, char *comman
 			g_free(quit_message);
 			authorized = TRUE;
 		}
+	} else if( !strcasecmp(command_parts[0], "upgrade") ){
+		if( isadmin(session, message->origin) ){
+			int hg_ret_val = system("hg in --bundle incoming.bundle");
+			if( WEXITSTATUS(hg_ret_val) == 0 ){
+				system("hg pull -u incoming.bundle");
+				remove("incoming.bundle");
+				system("make clean");
+			}
+			int make_ret_val = system("make -q twitterbot");
+			if( WEXITSTATUS(make_ret_val) ){
+				make_ret_val = system("make twitterbot");
+				if( WEXITSTATUS(make_ret_val) ){
+					irc_cmd_notice(session, nick, "Upgrade failed!");
+				} else {
+					irc_cmd_notice(session, nick, "Upgrade successful!");
+					g_static_rw_lock_writer_lock(context->flags_lock);
+					context->flags.run = 0;
+					context->flags.restart = 1;
+					g_static_rw_lock_writer_unlock(context->flags_lock);
+					irc_cmd_quit(session, "Restarting for upgrade");
+				}
+			}
+			authorized = TRUE;
+		}
 	}
 	if( !authorized ){
 		irc_cmd_notice(session, nick, "You are not authorized to perform this command.");
