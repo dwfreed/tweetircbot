@@ -1,10 +1,11 @@
 {
 	"bot": {
 		"ipv6": true,
+		"sasl": true,
 		"server": "irc.freenode.net",
 		"port": 6667,
 		"nick": "twitter",
-		"password": "mypassword",
+		"password": "twitter:mypassword",
 		"name": "Twitter",
 		"user": "twitter",
 		"user_mode": "",

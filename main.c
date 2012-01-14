@@ -57,6 +57,9 @@ int main(int argc __attribute__((__unused__)), char *argv[]){
 	struct context *context = (struct context *)calloc(1, sizeof(struct context));
 	context->config = g_hash_table_new_full(g_str_hash, g_str_equal, free, config_free);
 	if( load_config(context->config) ){
+		if( config_get_boolean(context->config, "bot.sasl") ){
+			irc_option_set(session, LIBIRCCLIENT_OPTION_SASL);
+		}
 		context->flags.run = TRUE;
 		context->flags.restart = FALSE;
 		context->flags.follow_config_changed = FALSE;
