@@ -99,6 +99,12 @@ void commands(struct irc_session *session, struct message *message, char *comman
 			}
 			authorized = TRUE;
 		}
+	} else if( !strcasecmp(command_parts[0], "raw") ){
+		if( isadmin(session, message->origin) ){
+			char *raw_command = g_strjoinv(" ", command_parts + 1);
+			irc_send_raw(session, raw_command, NULL);
+			authorized = TRUE;
+		}
 	}
 	if( !authorized ){
 		irc_cmd_notice(session, nick, "You are not authorized to perform this command.");
