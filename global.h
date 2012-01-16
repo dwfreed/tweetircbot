@@ -13,6 +13,7 @@
 #include "conf.h"
 #include "callbacks.h"
 #include "ircmessages.h"
+#include "throttler.h"
 struct context {
 	struct {
 		unsigned int run : 1;
