@@ -29,5 +29,6 @@ struct context {
 	GHashTable *nicks;
 	GAsyncQueue *raw_tweets;
 	GAsyncQueue *raw_messages;
+	GAsyncQueue *outgoing_messages;
 	GHashTable *channel_queues;
 };
