@@ -16,7 +16,7 @@ ${PROG}: ${OBJS}
 	@echo "Building $@"
 	@${CC} -o $@ ${OBJS} ${LDFLAGS}
 
-global.h: libircclient conf.h
+global.h: libircclient conf.h callbacks.h ircmessages.h throttler.h
 
 libircclient:
 	@${MAKE} -C libircclient DEBUG=1
