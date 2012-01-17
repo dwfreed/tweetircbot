@@ -200,6 +200,11 @@ void *ircmessages(void *args){
 					g_static_rw_lock_writer_lock(context->flags_lock);
 					context->flags.run = 0;
 					g_static_rw_lock_writer_unlock(context->flags_lock);
+				} else if( !strcasecmp(message->event, "PONG") ){
+					g_mutex_lock(context->pong_mutex);
+					context->flags.pong_received = TRUE;
+					g_cond_signal(context->pong_cond);
+					g_mutex_unlock(context->pong_mutex);
 				}
 			}
 			message_free(message);
