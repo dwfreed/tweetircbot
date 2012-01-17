@@ -63,7 +63,7 @@ int main(int argc __attribute__((__unused__)), char *argv[]){
 		context->flags.run = TRUE;
 		context->flags.restart = FALSE;
 		context->flags.follow_config_changed = FALSE;
-		context->flags.pong_received = FALSE;
+		context->flags.pong_received = TRUE;
 		GStaticRWLock flags_lock = G_STATIC_RW_LOCK_INIT;
 		context->flags_lock = &flags_lock;
 		context->pong_cond = g_cond_new();
