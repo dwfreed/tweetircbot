@@ -95,6 +95,7 @@ int main(int argc __attribute__((__unused__)), char *argv[]){
 				} else {
 					irc_connect(session, config_get_string(context->config, "bot.server"), config_get_int(context->config, "bot.port"), config_get_string(context->config, "bot.password"),  config_get_string(context->config, "bot.nick"), config_get_string(context->config, "bot.user"), config_get_string(context->config, "bot.name"));
 				}
+				g_static_rw_lock_reader_unlock(context->config_lock);
 				irc_run(session);
 				g_thread_join(throttler_thread);
 				g_thread_join(ircmessage_thread);
