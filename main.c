@@ -97,6 +97,15 @@ int main(int argc __attribute__((__unused__)), char *argv[]){
 				}
 				g_static_rw_lock_reader_unlock(context->config_lock);
 				irc_run(session);
+				g_static_rw_lock_reader_lock(context->flags_lock);
+				if( context->flags.run ){
+					g_static_rw_lock_reader_unlock(context->flags_lock);
+					g_static_rw_lock_writer_lock(context->flags_lock);
+					context->flags.run = FALSE;
+					g_static_rw_lock_writer_unlock(context->flags_lock);
+				} else {
+					g_static_rw_lock_reader_unlock(context->flags_lock);
+				}
 				g_thread_join(throttler_thread);
 				g_thread_join(ircmessage_thread);
 		}
