@@ -108,6 +108,7 @@ int main(int argc __attribute__((__unused__)), char *argv[]){
 				}
 				g_thread_join(throttler_thread);
 				g_thread_join(ircmessage_thread);
+			}
 		}
 		g_hash_table_destroy(context->channel_queues);
 		g_async_queue_unref(context->outgoing_messages);
