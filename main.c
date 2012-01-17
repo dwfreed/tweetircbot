@@ -83,14 +83,21 @@ int main(int argc __attribute__((__unused__)), char *argv[]){
 			g_error_free(error);
 			retval = 1;
 		} else {
-			g_static_rw_lock_reader_lock(context->config_lock);
-			if( config_get_boolean(context->config, "bot.ipv6") ){
-				irc_connect6(session, config_get_string(context->config, "bot.server"), config_get_int(context->config, "bot.port"), config_get_string(context->config, "bot.password"),  config_get_string(context->config, "bot.nick"), config_get_string(context->config, "bot.user"), config_get_string(context->config, "bot.name"));
+			GThread *throttler_thread;
+			if( !(throttler_thread = g_thread_create(throttler, session, TRUE, &error)) ){
+				fprintf(stderr, "Error starting throttler thread: %s", error->message);
+				g_error_free(error);
+				retval = 1;
 			} else {
-				irc_connect(session, config_get_string(context->config, "bot.server"), config_get_int(context->config, "bot.port"), config_get_string(context->config, "bot.password"),  config_get_string(context->config, "bot.nick"), config_get_string(context->config, "bot.user"), config_get_string(context->config, "bot.name"));
-			}
-			irc_run(session);
-			g_thread_join(ircmessage_thread);
+				g_static_rw_lock_reader_lock(context->config_lock);
+				if( config_get_boolean(context->config, "bot.ipv6") ){
+					irc_connect6(session, config_get_string(context->config, "bot.server"), config_get_int(context->config, "bot.port"), config_get_string(context->config, "bot.password"),  config_get_string(context->config, "bot.nick"), config_get_string(context->config, "bot.user"), config_get_string(context->config, "bot.name"));
+				} else {
+					irc_connect(session, config_get_string(context->config, "bot.server"), config_get_int(context->config, "bot.port"), config_get_string(context->config, "bot.password"),  config_get_string(context->config, "bot.nick"), config_get_string(context->config, "bot.user"), config_get_string(context->config, "bot.name"));
+				}
+				irc_run(session);
+				g_thread_join(throttler_thread);
+				g_thread_join(ircmessage_thread);
 		}
 		g_hash_table_destroy(context->channel_queues);
 		g_async_queue_unref(context->outgoing_messages);
