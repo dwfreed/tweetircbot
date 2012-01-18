@@ -47,19 +47,14 @@ void *throttler(void *args){
 
 int irc_send_raw_throttled(struct irc_session *session, const char *format, ...){
 	struct context *context = irc_get_ctx(session);
-	char *new_format = strdup(format), *command;
-	int format_length = strlen(format);
+	char *command;
 	va_list va_arg_list;
-	new_format = (char *)realloc(new_format, format_length + 3);
-	strcat(new_format, "\r\n");
 	va_start(va_arg_list, format);
-	if( vasprintf(&command, new_format, va_arg_list) < 0 ){
-		free(new_format);
+	if( vasprintf(&command, format, va_arg_list) < 0 ){
 		return 1;
 	}
 	va_end(va_arg_list);
 	g_async_queue_push(context->outgoing_messages, command);
-	free(new_format);
 	return 0;
 }
 
