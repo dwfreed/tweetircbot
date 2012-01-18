@@ -30,13 +30,13 @@ void *throttler(void *args){
 				irc_send_raw(session, "PING %s", irc_get_nick(session));
 				g_get_current_time(&wait_time);
 				g_time_val_add(&wait_time, 1000000);
-				if( g_cond_timed_wait(context->pong_cond, context->pong_mutex, &wait_time) ){
-					g_mutex_unlock(context->pong_mutex);
-				}
+				g_cond_timed_wait(context->pong_cond, context->pong_mutex, &wait_time);
+				g_mutex_unlock(context->pong_mutex);
 			} else {
 				g_mutex_unlock(context->pong_mutex);
 			}
-		} else if( g_cond_timed_wait(context->pong_cond, context->pong_mutex, &wait_time) ){
+		} else {
+			g_cond_timed_wait(context->pong_cond, context->pong_mutex, &wait_time);
 			g_mutex_unlock(context->pong_mutex);
 		}
 		g_static_rw_lock_reader_lock(context->flags_lock);
