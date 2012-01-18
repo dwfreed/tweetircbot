@@ -60,7 +60,7 @@ void commands(struct irc_session *session, struct message *message, char *comman
 			context->flags.run = 0;
 			g_static_rw_lock_writer_unlock(context->flags_lock);
 			char *quit_message = g_strjoinv(" ", command_parts + 1);
-			irc_cmd_quit(session, quit_message);
+			irc_cmd_quit_throttled(session, quit_message);
 			g_free(quit_message);
 			authorized = TRUE;
 		}
@@ -71,7 +71,7 @@ void commands(struct irc_session *session, struct message *message, char *comman
 			context->flags.restart = 1;
 			g_static_rw_lock_writer_unlock(context->flags_lock);
 			char *quit_message = g_strjoinv(" ", command_parts + 1);
-			irc_cmd_quit(session, quit_message);
+			irc_cmd_quit_throttled(session, quit_message);
 			g_free(quit_message);
 			authorized = TRUE;
 		}
@@ -87,29 +87,29 @@ void commands(struct irc_session *session, struct message *message, char *comman
 			if( WEXITSTATUS(make_ret_val) ){
 				make_ret_val = system("make twitterbot");
 				if( WEXITSTATUS(make_ret_val) ){
-					irc_cmd_notice(session, nick, "Upgrade failed!");
+					irc_cmd_notice_throttled(session, nick, "Upgrade failed!");
 				} else {
-					irc_cmd_notice(session, nick, "Upgrade successful!");
+					irc_cmd_notice_throttled(session, nick, "Upgrade successful!");
 					g_static_rw_lock_writer_lock(context->flags_lock);
 					context->flags.run = 0;
 					context->flags.restart = 1;
 					g_static_rw_lock_writer_unlock(context->flags_lock);
-					irc_cmd_quit(session, "Restarting for upgrade");
+					irc_cmd_quit_throttled(session, "Restarting for upgrade");
 				}
 			} else {
-				irc_cmd_notice(session, nick, "Upgrade not needed.");
+				irc_cmd_notice_throttled(session, nick, "Upgrade not needed.");
 			}
 			authorized = TRUE;
 		}
 	} else if( !strcasecmp(command_parts[0], "raw") ){
 		if( isadmin(session, message->origin) ){
 			char *raw_command = g_strjoinv(" ", command_parts + 1);
-			irc_send_raw(session, raw_command, NULL);
+			irc_send_raw_throttled(session, raw_command, NULL);
 			authorized = TRUE;
 		}
 	}
 	if( !authorized ){
-		irc_cmd_notice(session, nick, "You are not authorized to perform this command.");
+		irc_cmd_notice_throttled(session, nick, "You are not authorized to perform this command.");
 	}
 	free(nick);
 }
@@ -139,7 +139,7 @@ void *ircmessages(void *args){
 				if( !strcasecmp(message->event, "JOIN") ){
 					char *nick = irc_target_get_nick(message->origin);
 					if( !strcmp(nick, irc_get_nick(session)) ){
-						irc_send_raw(session, "WHO %s %%na", message->params[0]);
+						irc_send_raw_throttled(session, "WHO %s %%%%na", message->params[0]);
 						free(nick);
 					} else {
 						if( strcmp(message->params[1], "*") ){
@@ -168,10 +168,10 @@ void *ircmessages(void *args){
 					}
 					g_strfreev(text_parts);
 				} else if( !strcasecmp(message->event, "CONNECT") ){
-					irc_send_raw(session, "CAP REQ :account-notify extended-join");
+					irc_send_raw_throttled(session, "CAP REQ :account-notify extended-join");
 					int channels_size;
 					g_static_rw_lock_reader_lock(context->config_lock);
-					irc_cmd_user_mode(session, config_get_string(context->config, "bot.user_mode"));
+					irc_cmd_user_mode_throttled(session, config_get_string(context->config, "bot.user_mode"));
 					GList *channels = config_get_array(context->config, "bot.channels", &channels_size);
 					char join_command[511] = "JOIN ";
 					int i = 0;
@@ -191,7 +191,7 @@ void *ircmessages(void *args){
 								break;
 							}
 						}
-						irc_send_raw(session, join_command, NULL);
+						irc_send_raw_throttled(session, join_command, NULL);
 						strcpy(join_command, "JOIN ");
 					}
 					g_static_rw_lock_reader_unlock(context->config_lock);
