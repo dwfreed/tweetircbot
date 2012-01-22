@@ -35,7 +35,7 @@ run: ${PROG}
 
 clean:
 	@echo "Cleaning ${PROG}"
-	@rm -f ${PROG} ${OBJS} $(wildcard auth/*/auth.so auth/*/*/auth.so)
+	@rm -f ${PROG} ${OBJS}
 	@${MAKE} -C libircclient clean
 
 leakcheck: ${PROG}
