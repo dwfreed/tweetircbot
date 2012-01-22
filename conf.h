@@ -33,3 +33,5 @@ void config_free(void *item);
 int unload_config(GHashTable *config_table);
 void config_unparse(GHashTable *config, JsonBuilder *builder);
 void config_array_unparse(GList *array, JsonBuilder *builder);
+void *config_get(GHashTable *config, char *path, enum types *type, int *size);
+void *contig_array_get(GList *array, int index, enum types *type, int *size);
