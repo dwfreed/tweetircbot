@@ -107,6 +107,9 @@ void commands(struct irc_session *session, struct message *message, char *comman
 			irc_send_raw_throttled(session, raw_command, NULL);
 			authorized = TRUE;
 		}
+	} else if( !strcasecmp(command_parts[0], "version") ){
+		irc_cmd_notice(session, nick, TWITTERBOT_VERSION);
+		authorized = TRUE;
 	}
 	if( !authorized ){
 		irc_cmd_notice_throttled(session, nick, "You are not authorized to perform this command.");
