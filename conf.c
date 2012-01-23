@@ -475,3 +475,33 @@ void config_unparse(GHashTable *config, JsonBuilder *builder){
 	g_strfreev(current_setting_name);
 	json_builder_end_object(builder);
 }
+
+void *config_get(GHashTable *config, char *path, enum types *type, int *size){
+	struct config_entry *value = (struct config_entry *)g_hash_table_lookup(config, path);
+	if( value ){
+		errno = 0;
+		*type = value->type;
+		if( *type == TYPE_ARRAY ){
+			*size = value->size;
+		}
+		return value->data;
+	} else {
+		errno = ENOENT;
+		return NULL;
+	}
+}
+
+void *config_array_get(GList *array, int index, enum types *type, int *size){
+	struct config_entry *value = (struct config_entry *)g_list_nth_data(array, index);
+	if( value ){
+		errno = 0;
+		*type = value->type;
+		if( *type == TYPE_ARRAY ){
+			*size = value->size;
+		}
+		return value->data;
+	} else {
+		errno = ENOENT;
+		return NULL;
+	}
+}
